@@ -1,0 +1,553 @@
+/* =============================================================
+   TerraSur Geofísica — styles.css
+   Archetype: Brutalist technical grid, adapted palette
+   (instrument/resistivity tones instead of RGB primaries)
+   ============================================================= */
+
+/* =============================================================
+   1. Tokens
+   ============================================================= */
+:root {
+  --bg:        #0a0d0f;
+  --bg-2:      #10151a;
+  --bg-3:      #161c22;
+  --cream:     #eef1ef;
+  --cream-2:   #c3cbc8;
+  --cream-3:   #7c8886;
+  --line:      rgba(226, 236, 234, 0.14);
+  --line-strong: rgba(226, 236, 234, 0.28);
+  --amber:     #ff9d2e;
+  --amber-2:   #d97a1f;
+  --teal:      #35c9c1;
+  --danger:    #ff5c5c;
+
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", "Segoe UI", monospace;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+
+  --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:   cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  --nav-h: 76px;
+  --gutter: 1px;
+  --container-max: 1400px;
+}
+
+/* =============================================================
+   2. Reset & base
+   ============================================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; }
+html {
+  -webkit-text-size-adjust: 100%;
+  tab-size: 2;
+  overflow-x: clip;
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+body {
+  background: var(--bg);
+  color: var(--cream-2);
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+  overscroll-behavior-y: none;
+}
+img, svg, video, canvas { display: block; max-width: 100%; }
+img { height: auto; }
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+a { color: inherit; text-decoration: none; }
+p { text-wrap: pretty; }
+h1, h2, h3, h4 {
+  font-family: var(--display);
+  color: var(--cream);
+  text-wrap: balance;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+em { font-style: normal; color: var(--amber); }
+ul, ol { list-style: none; padding: 0; }
+::selection { background: var(--amber); color: var(--bg); }
+
+:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+}
+
+/* =============================================================
+   3. Utilities
+   ============================================================= */
+.skip-link {
+  position: fixed; top: -100px; left: 1rem; z-index: 9999;
+  padding: .7rem 1.1rem;
+  background: var(--amber); color: var(--bg);
+  font-family: var(--mono); font-size: .85rem; font-weight: 700;
+  transition: top .25s var(--ease-out);
+}
+.skip-link:focus { top: 1rem; }
+
+.container {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: clamp(1.1rem, 4vw, 2.5rem);
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+.kicker {
+  font-family: var(--mono);
+  font-size: .78rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+}
+.kicker::before { content: ""; width: 6px; height: 6px; background: var(--amber); display: inline-block; }
+
+.section-num {
+  font-family: var(--mono);
+  font-size: .78rem;
+  color: var(--cream-3);
+  letter-spacing: .08em;
+}
+
+/* language toggle visibility — works with zero JS: html carries data-lang statically.
+   NOTE: data-i18n is only ever applied to plain text-level elements
+   (h1-h6, p, li, dt/dd, span, a, button-label) whose UA-default "revert"
+   display is correct — never on flex/grid structural containers. */
+[data-i18n="en"] { display: none; }
+html[data-lang="en"] [data-i18n="es"] { display: none; }
+html[data-lang="en"] [data-i18n="en"] { display: revert; }
+
+/* =============================================================
+   4. Typography
+   ============================================================= */
+.h-display {
+  font-size: clamp(2.4rem, 6.6vw, 5.6rem);
+  line-height: .98;
+}
+.h-section {
+  font-size: clamp(1.7rem, 3.6vw, 2.8rem);
+  max-width: 22ch;
+}
+.body-lg {
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  font-weight: 300;
+  color: var(--cream-2);
+  max-width: 58ch;
+}
+.mono-tag {
+  font-family: var(--mono);
+  font-size: .82rem;
+  color: var(--cream-3);
+  letter-spacing: .04em;
+}
+
+/* =============================================================
+   5. Components
+   ============================================================= */
+
+/* --- Buttons --- */
+.btn {
+  display: inline-flex; align-items: center; gap: .6em;
+  padding: .95rem 1.6rem;
+  font-family: var(--mono);
+  font-size: .88rem;
+  font-weight: 500;
+  letter-spacing: .02em;
+  border: 1px solid var(--line-strong);
+  transition: background .2s var(--ease-out), color .2s var(--ease-out), border-color .2s var(--ease-out), transform .2s var(--ease-out);
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--amber);
+  color: var(--bg);
+  border-color: var(--amber);
+}
+.btn-primary:hover { background: var(--cream); border-color: var(--cream); transform: translateY(-2px); }
+.btn-ghost {
+  background: transparent;
+  color: var(--cream);
+}
+.btn-ghost:hover { background: var(--cream); color: var(--bg); border-color: var(--cream); }
+
+/* --- Nav --- */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--nav-h);
+  display: flex; align-items: center;
+  background: rgba(10,13,15,.7);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .nav { background: rgba(10,13,15,.96); }
+}
+.nav-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 1.5rem; }
+.brand {
+  display: flex; align-items: baseline; gap: .6rem;
+  font-family: var(--display); font-weight: 700; font-size: 1.05rem; color: var(--cream);
+}
+.brand-tag {
+  font-family: var(--mono); font-size: .7rem; color: var(--bg);
+  background: var(--amber); padding: .15rem .4rem; letter-spacing: .04em;
+}
+.nav-links { display: none; align-items: center; gap: 2rem; }
+.nav-links a {
+  font-family: var(--mono); font-size: .82rem; color: var(--cream-2);
+  position: relative; padding-block: .3rem;
+}
+.nav-links a::after {
+  content: ""; position: absolute; left: 0; right: 100%; bottom: 0; height: 1px;
+  background: var(--amber); transition: right .3s var(--ease-out);
+}
+.nav-links a:hover::after, .nav-links a:focus-visible::after { right: 0; }
+.nav-right { display: flex; align-items: center; gap: 1rem; }
+.lang-toggle {
+  font-family: var(--mono); font-size: .8rem; color: var(--cream-2);
+  border: 1px solid var(--line-strong); padding: .4rem .7rem;
+  display: flex; gap: .35rem;
+}
+.lang-toggle span { padding-inline: .15rem; }
+.lang-toggle .is-active { color: var(--amber); font-weight: 700; }
+.nav-cta { display: none; }
+.nav-toggle-input {
+  position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none;
+}
+.nav-burger {
+  display: flex; flex-direction: column; gap: 5px; width: 26px; cursor: pointer;
+}
+.nav-burger span { height: 2px; width: 100%; background: var(--cream); transition: transform .25s var(--ease-out), opacity .2s; }
+.nav-toggle-input:checked ~ .container .nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle-input:checked ~ .container .nav-burger span:nth-child(2) { opacity: 0; }
+.nav-toggle-input:checked ~ .container .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-menu {
+  position: fixed; inset: var(--nav-h) 0 0 0; z-index: 90;
+  background: var(--bg);
+  padding: 2rem clamp(1.1rem, 4vw, 2.5rem);
+  transform: translateY(-8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s var(--ease-out), transform .25s var(--ease-out);
+  border-top: 1px solid var(--line);
+  overflow-y: auto;
+}
+.nav-toggle-input:checked ~ .mobile-menu { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.mobile-menu a {
+  display: block; padding: 1rem 0; border-bottom: 1px solid var(--line);
+  font-family: var(--mono); font-size: 1.1rem; color: var(--cream);
+}
+.mobile-menu .btn { margin-top: 1.5rem; width: 100%; justify-content: center; }
+
+/* --- Grid system (brutalist) --- */
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--gutter);
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.grid-12 > * { background: var(--bg); padding: clamp(1.4rem, 3vw, 2.6rem); }
+.g-span-12 { grid-column: span 12; }
+.g-span-8  { grid-column: span 12; }
+.g-span-6  { grid-column: span 12; }
+.g-span-4  { grid-column: span 12; }
+.g-span-3  { grid-column: span 12; }
+@media (min-width: 720px) {
+  .g-span-8 { grid-column: span 8; }
+  .g-span-6 { grid-column: span 6; }
+  .g-span-4 { grid-column: span 6; }
+  .g-span-3 { grid-column: span 6; }
+}
+@media (min-width: 960px) {
+  .g-span-4 { grid-column: span 4; }
+  .g-span-3 { grid-column: span 3; }
+}
+
+/* --- Cards --- */
+.spec-row {
+  display: flex; justify-content: space-between; gap: 1rem;
+  padding: .9rem 0;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono); font-size: .92rem;
+}
+.spec-row dt { color: var(--cream-3); }
+.spec-row dd { color: var(--cream); text-align: right; }
+.spec-row dd em { color: var(--teal); }
+
+.team-card { display: flex; flex-direction: column; gap: 1rem; }
+.team-mono {
+  width: 68px; height: 68px;
+  border: 1px solid var(--line-strong);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-weight: 700; font-size: 1.1rem; color: var(--amber);
+  position: relative;
+}
+.team-mono::after {
+  content: ""; position: absolute; inset: 6px;
+  border: 1px solid var(--line);
+}
+.team-name { font-family: var(--display); font-size: 1.15rem; color: var(--cream); }
+.team-role { font-family: var(--mono); font-size: .78rem; color: var(--amber); letter-spacing: .05em; text-transform: uppercase; }
+.team-spec { font-size: .95rem; color: var(--cream-3); }
+
+.faq-item { border-bottom: 1px solid var(--line); }
+.faq-q {
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem; padding: 1.4rem 0; text-align: left;
+  font-family: var(--display); font-size: clamp(1.05rem, 2vw, 1.3rem); color: var(--cream);
+}
+.faq-q .plus {
+  font-family: var(--mono); font-size: 1.3rem; color: var(--amber);
+  transition: transform .3s var(--ease-out); flex-shrink: 0;
+}
+.faq-item.is-open .faq-q .plus { transform: rotate(45deg); }
+/* Collapsed state only applies once JS confirmed running; without JS, answers stay expanded/visible */
+html.js .faq-a {
+  max-height: 0; overflow: hidden;
+  transition: max-height .35s var(--ease-out);
+}
+.faq-a-inner { padding-bottom: 1.4rem; max-width: 62ch; color: var(--cream-2); }
+html.js .faq-item.is-open .faq-a { max-height: 400px; }
+
+/* --- Form --- */
+.field { display: flex; flex-direction: column; gap: .5rem; margin-bottom: 1.3rem; }
+.field label { font-family: var(--mono); font-size: .78rem; color: var(--cream-3); letter-spacing: .05em; text-transform: uppercase; }
+.field input, .field select, .field textarea {
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  color: var(--cream);
+  padding: .85rem 1rem;
+  font-family: var(--sans);
+  font-size: 1rem;
+  transition: border-color .2s var(--ease-out);
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--amber); outline: none;
+}
+.field textarea { resize: vertical; min-height: 110px; }
+.form-row { display: grid; gap: 0 1.4rem; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .form-row-2 { grid-template-columns: 1fr 1fr; } }
+.form-note { font-size: .85rem; color: var(--cream-3); margin-top: .8rem; }
+.form-success {
+  display: none;
+  font-family: var(--mono); font-size: .9rem; color: var(--teal);
+  padding: 1rem; border: 1px solid var(--teal); margin-top: 1rem;
+}
+.form-success.is-visible { display: block; }
+
+/* =============================================================
+   6. Sections
+   ============================================================= */
+section { position: relative; background: var(--bg); }
+
+/* --- Hero --- */
+.hero {
+  min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding-top: calc(var(--nav-h) + 2rem);
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--line);
+  overflow: clip;
+}
+.hero-grid {
+  display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center;
+}
+@media (min-width: 960px) {
+  .hero-grid { grid-template-columns: 1.1fr .9fr; gap: 3rem; }
+}
+.hero-eyebrow { margin-bottom: 1.4rem; }
+.hero-title { margin-bottom: 1.5rem; }
+.hero-sub { margin-bottom: 2.2rem; }
+.hero-ctas { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.8rem; }
+
+.hero-stats {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--gutter);
+  background: var(--line); border: 1px solid var(--line);
+}
+.hero-stat { background: var(--bg); padding: 1rem 1.2rem; }
+.hero-stat .val { font-family: var(--mono); font-size: clamp(1.3rem, 2.6vw, 1.7rem); color: var(--amber); font-weight: 700; display: block; }
+.hero-stat .lbl { font-family: var(--mono); font-size: .68rem; color: var(--cream-3); letter-spacing: .04em; text-transform: uppercase; }
+
+.hero-visual {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+  overflow: hidden;
+}
+.hero-visual canvas { width: 100%; height: 100%; }
+.hero-visual-label {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  display: flex; justify-content: space-between;
+  padding: .8rem 1rem;
+  font-family: var(--mono); font-size: .7rem; color: var(--cream-3);
+  border-top: 1px solid var(--line);
+  background: rgba(10,13,15,.75);
+  letter-spacing: .04em;
+}
+.hero-visual-label .teal { color: var(--teal); }
+.hero-visual-label .amber { color: var(--amber); }
+
+/* --- Generic section head --- */
+.section-head { margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+.section-head .kicker { margin-bottom: 1rem; }
+.section-pad { padding-block: clamp(4rem, 9vw, 7rem); }
+
+/* --- Problem --- */
+.problem-quote {
+  font-family: var(--display); font-weight: 500;
+  font-size: clamp(1.3rem, 2.6vw, 2rem);
+  color: var(--teal);
+  border-left: 2px solid var(--teal);
+  padding-left: 1.4rem;
+  margin-block: 1.6rem;
+  max-width: 40ch;
+}
+
+/* --- Technology numbered blocks --- */
+.tech-block-num {
+  font-family: var(--mono); font-size: 2.4rem; font-weight: 700;
+  color: var(--line-strong); line-height: 1; margin-bottom: 1rem;
+  -webkit-text-stroke: 1px var(--amber);
+  color: transparent;
+}
+.tech-block h3 { font-size: clamp(1.2rem, 2vw, 1.5rem); margin-bottom: .8rem; }
+.tech-block p { color: var(--cream-2); margin-bottom: 1rem; }
+.tech-block .mono-tag { display: block; padding-top: .8rem; border-top: 1px solid var(--line); }
+
+/* --- Results / spec sheet --- */
+.spec-sheet dl { display: block; }
+
+/* --- Roadmap --- */
+.roadmap-box {
+  border: 1px solid var(--teal);
+  padding: clamp(1.6rem, 4vw, 2.8rem);
+  position: relative;
+}
+.roadmap-box::before {
+  content: "IN PROGRESS";
+  position: absolute; top: -1px; right: -1px;
+  background: var(--teal); color: var(--bg);
+  font-family: var(--mono); font-size: .65rem; font-weight: 700;
+  padding: .3rem .6rem; letter-spacing: .05em;
+}
+
+/* --- ANID strip --- */
+.anid-strip {
+  border-block: 1px solid var(--line);
+  padding-block: clamp(2rem, 4vw, 2.6rem);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 2rem 3rem;
+}
+.anid-text { font-family: var(--display); font-size: clamp(1.1rem, 2.2vw, 1.5rem); color: var(--cream); max-width: 46ch; }
+.anid-codes { display: flex; gap: 1rem; flex-wrap: wrap; margin-left: auto; }
+.anid-code {
+  font-family: var(--mono); font-size: .78rem; color: var(--cream-3);
+  border: 1px solid var(--line-strong); padding: .5rem .8rem;
+}
+.anid-code strong { color: var(--amber); }
+
+/* --- Contact --- */
+.contact-head { max-width: 46ch; }
+.contact-direct { margin-top: 1.6rem; }
+.contact-direct a {
+  font-family: var(--mono); color: var(--teal); border-bottom: 1px solid transparent;
+  transition: border-color .2s var(--ease-out);
+}
+.contact-direct a:hover { border-color: var(--teal); }
+
+/* --- Footer --- */
+.footer {
+  border-top: 1px solid var(--line);
+  padding-block: clamp(2.5rem, 5vw, 3.5rem);
+}
+.footer-grid {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem;
+}
+.footer-brand { max-width: 32ch; }
+.footer-brand .brand { margin-bottom: .8rem; }
+.footer-brand p { font-size: .92rem; color: var(--cream-3); }
+.footer-col h4 { font-family: var(--mono); font-size: .75rem; color: var(--cream-3); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 1rem; }
+.footer-col a, .footer-col p { display: block; font-size: .92rem; color: var(--cream-2); margin-bottom: .5rem; }
+.footer-col a:hover { color: var(--amber); }
+.footer-bottom {
+  margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  font-family: var(--mono); font-size: .78rem; color: var(--cream-3);
+}
+
+/* =============================================================
+   7. Effects
+   ============================================================= */
+
+/* Reveal on scroll — only hidden when JS confirmed running (html.js set synchronously in <head>).
+   Without JS, .reveal never gets opacity:0, so content is always visible. */
+html.js .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); }
+.reveal.is-visible { opacity: 1; transform: none; }
+html.js .reveal[data-split] { opacity: 1; transform: none; } /* defensive: never leave split-text invisible */
+
+/* Depth/resistivity cursor probe */
+.probe {
+  position: fixed; top: 0; left: 0; z-index: 200;
+  transform: translate3d(-999px, -999px, 0);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s var(--ease-out);
+  font-family: var(--mono); font-size: .72rem; white-space: nowrap;
+}
+.probe.is-ready { opacity: 1; }
+.probe-inner {
+  background: var(--bg-2);
+  border: 1px solid var(--amber);
+  padding: .4rem .6rem;
+  display: flex; gap: .8rem;
+  transform: translate(14px, 14px);
+}
+.probe-depth { color: var(--cream); }
+.probe-res { color: var(--teal); }
+.probe-res.is-high { color: var(--amber); }
+
+@media (hover: none), (pointer: coarse) {
+  .probe { display: none; }
+}
+
+/* Grain texture, very subtle */
+.grain {
+  position: fixed; inset: 0; z-index: 1; opacity: .035; mix-blend-mode: overlay; pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* =============================================================
+   8. Responsive
+   ============================================================= */
+@media (min-width: 720px) {
+  .nav-cta { display: inline-flex; }
+}
+@media (min-width: 960px) {
+  .nav-links { display: flex; }
+  .nav-burger, .mobile-menu { display: none; }
+}
+
+/* =============================================================
+   9. Reduced motion — only intrusive effects
+   ============================================================= */
+/* The hero resistivity canvas and count-up numbers are treated as
+   functional/ambient (like a slow mesh-gradient loop) per the skill's
+   gotcha A.2: they are throttled, not disabled, in main.js — nothing
+   here needs a hard "display:none" or "animation:none" override. */
