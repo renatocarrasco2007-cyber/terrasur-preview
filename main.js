@@ -75,8 +75,19 @@
     var items = $$(".reveal");
     if (!items.length) return;
 
+    // Reveal anything already on/near screen immediately — don't make the
+    // very first paint depend on an async IntersectionObserver callback.
+    var pending = [];
+    items.forEach(function (el) {
+      var rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 1.15) el.classList.add("is-visible");
+      else pending.push(el);
+    });
+
+    if (!pending.length) return;
+
     if (typeof IntersectionObserver === "undefined") {
-      items.forEach(function (el) { el.classList.add("is-visible"); });
+      pending.forEach(function (el) { el.classList.add("is-visible"); });
       return;
     }
 
@@ -89,10 +100,10 @@
       });
     }, { threshold: 0.01, rootMargin: "0px 0px -2% 0px" });
 
-    items.forEach(function (el) { io.observe(el); });
+    pending.forEach(function (el) { io.observe(el); });
 
     setTimeout(function () {
-      items.forEach(function (el) {
+      pending.forEach(function (el) {
         if (!el.classList.contains("is-visible") && el.getBoundingClientRect().top < window.innerHeight) {
           el.classList.add("is-visible");
         }
