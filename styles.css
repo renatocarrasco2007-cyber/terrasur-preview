@@ -8,6 +8,9 @@
    1. Tokens
    ============================================================= */
 :root {
+  color-scheme: dark; /* tells the browser this page is deliberately dark —
+    prevents Android/Brave/Chrome "force dark theme" heuristics from
+    repainting an already-dark design and turning text invisible */
   --bg:        #0a0d0f;
   --bg-2:      #10151a;
   --bg-3:      #161c22;
