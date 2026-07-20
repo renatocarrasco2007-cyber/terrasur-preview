@@ -414,16 +414,6 @@ section { position: relative; background: var(--bg); }
 .section-head .kicker { margin-bottom: 1rem; }
 .section-pad { padding-block: clamp(4rem, 9vw, 7rem); }
 
-/* --- Problem --- */
-.problem-quote {
-  font-family: var(--display); font-weight: 500;
-  font-size: clamp(1.3rem, 2.6vw, 2rem);
-  color: var(--teal);
-  border-left: 2px solid var(--teal);
-  padding-left: 1.4rem;
-  margin-block: 1.6rem;
-  max-width: 40ch;
-}
 
 /* --- Technology numbered blocks --- */
 .tech-block-num {
