@@ -3,7 +3,6 @@
 
   var data = window.__BRAND__ || {};
   var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var fineHover = matchMedia("(hover: hover) and (pointer: fine)").matches;
 
   var $ = function (sel, scope) { return (scope || document).querySelector(sel); };
   var $$ = function (sel, scope) { return Array.prototype.slice.call((scope || document).querySelectorAll(sel)); };
@@ -198,43 +197,6 @@
   }
 
   /* ---------------------------------------------------------
-     Depth / resistivity cursor probe — the signature effect.
-     Maps cursor Y position to a simulated depth (0-4000m) and
-     a resistivity reading (1-1000 Ohm.m), echoing the real
-     figures from the validated results section.
-     --------------------------------------------------------- */
-  function initProbe() {
-    if (!fineHover) return;
-    var probe = $("[data-probe]");
-    if (!probe) return;
-    var depthEl = $("[data-probe-depth]", probe);
-    var resEl = $("[data-probe-res]", probe);
-    var ready = false;
-
-    window.addEventListener("mousemove", function (e) {
-      probe.style.transform = "translate3d(" + e.clientX + "px," + e.clientY + "px,0)";
-
-      var vh = window.innerHeight || 1;
-      var depthFrac = Math.min(1, Math.max(0, e.clientY / vh));
-      var depth = Math.round(depthFrac * 4000);
-      var resistivity = Math.round(1 + Math.pow(depthFrac, 0.6) * 999);
-
-      if (depthEl) depthEl.textContent = "DEPTH " + String(depth).padStart(4, "0") + " m";
-      if (resEl) {
-        resEl.textContent = "ρ " + resistivity + " Ω·m";
-        resEl.classList.toggle("is-high", resistivity > 500);
-      }
-
-      if (!ready) {
-        ready = true;
-        probe.classList.add("is-ready");
-      }
-    }, { passive: true });
-
-    window.addEventListener("mouseleave", function () { probe.classList.remove("is-ready"); });
-  }
-
-  /* ---------------------------------------------------------
      Hero resistivity cross-section — ambient canvas visual.
      A slow-drifting synthetic banding, not tied to real data,
      purely decorative (aria-hidden in the markup).
@@ -371,7 +333,6 @@
     safe(initReveals, "initReveals");
     safe(initCountUp, "initCountUp");
     safe(initFaq, "initFaq");
-    safe(initProbe, "initProbe");
     safe(initResistivityCanvas, "initResistivityCanvas");
     safe(initContactForm, "initContactForm");
     safe(initFooterYear, "initFooterYear");

@@ -506,31 +506,6 @@ html.js .reveal { opacity: 0; transform: translateY(28px); transition: opacity .
 html.js .reveal.is-visible { opacity: 1; transform: none; }
 html.js .reveal[data-split] { opacity: 1; transform: none; } /* defensive: never leave split-text invisible */
 
-/* Depth/resistivity cursor probe */
-.probe {
-  position: fixed; top: 0; left: 0; z-index: 200;
-  transform: translate3d(-999px, -999px, 0);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .25s var(--ease-out);
-  font-family: var(--mono); font-size: .72rem; white-space: nowrap;
-}
-.probe.is-ready { opacity: 1; }
-.probe-inner {
-  background: var(--bg-2);
-  border: 1px solid var(--amber);
-  padding: .4rem .6rem;
-  display: flex; gap: .8rem;
-  transform: translate(14px, 14px);
-}
-.probe-depth { color: var(--cream); }
-.probe-res { color: var(--teal); }
-.probe-res.is-high { color: var(--amber); }
-
-@media (hover: none), (pointer: coarse) {
-  .probe { display: none; }
-}
-
 /* Grain texture, very subtle */
 .grain {
   position: fixed; inset: 0; z-index: 1; opacity: .035; mix-blend-mode: overlay; pointer-events: none;
