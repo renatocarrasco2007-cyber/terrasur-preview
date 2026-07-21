@@ -29,12 +29,11 @@
   }
 
   /* ---------------------------------------------------------
-     Mobile menu — the checkbox already handles the toggle in pure
-     CSS via the :checked ~ sibling selector. This also mirrors the
-     checkbox state onto .is-open classes as a redundant rendering
-     path, in case a mobile browser's general-sibling-combinator
-     repaint lags behind a sticky + backdrop-filter ancestor. Closes
-     on link click either way.
+     Mobile menu — the checkbox drives the CSS :checked ~ sibling
+     selector as a no-JS fallback. When JS is available, sync() ALSO
+     forces the open/closed state via inline styles (highest possible
+     specificity — beats every stylesheet rule) so the menu can't get
+     stuck open/closed due to some device-specific cascade quirk.
      --------------------------------------------------------- */
   function initMobileMenu() {
     var toggle = $("#nav-toggle");
@@ -44,9 +43,24 @@
     if (!toggle || !menu) return;
 
     function sync() {
-      menu.classList.toggle("is-open", toggle.checked);
-      if (burger) burger.classList.toggle("is-open", toggle.checked);
-      if (backdrop) backdrop.classList.toggle("is-open", toggle.checked);
+      var open = toggle.checked;
+
+      menu.classList.toggle("is-open", open);
+      if (burger) burger.classList.toggle("is-open", open);
+      if (backdrop) backdrop.classList.toggle("is-open", open);
+
+      menu.style.marginRight = open ? "0px" : "";
+      menu.style.pointerEvents = open ? "auto" : "";
+      if (backdrop) {
+        backdrop.style.opacity = open ? "1" : "";
+        backdrop.style.pointerEvents = open ? "auto" : "";
+      }
+      if (burger) {
+        var spans = $$("span", burger);
+        if (spans[0]) spans[0].style.transform = open ? "translateY(7px) rotate(45deg)" : "";
+        if (spans[1]) spans[1].style.opacity = open ? "0" : "";
+        if (spans[2]) spans[2].style.transform = open ? "translateY(-7px) rotate(-45deg)" : "";
+      }
     }
     toggle.addEventListener("change", sync);
     sync();
