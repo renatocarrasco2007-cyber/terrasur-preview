@@ -79,14 +79,9 @@ ul, ol { list-style: none; padding: 0; }
 ::selection { background: var(--amber); color: #fff; }
 :focus-visible { outline: 3px solid var(--amber); outline-offset: 3px; }
 
-@view-transition { navigation: auto; }
-::view-transition-old(root), ::view-transition-new(root) {
-  animation-duration: .45s; animation-timing-function: cubic-bezier(0.16,1,0.3,1);
-}
-::view-transition-old(root) { animation-name: fadeOutUp; }
-::view-transition-new(root) { animation-name: fadeInUp; }
-@keyframes fadeOutUp { to { opacity: 0; transform: translateY(-10px); } }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } }
+/* Cross-document view-transitions were removed: on mobile they could
+   blend the outgoing page's open menu with the incoming page's hero
+   mid-fade, reading as a rendering bug rather than a transition. */
 
 /* =============================================================
    3. Utilities
@@ -192,20 +187,36 @@ html[data-lang="en"] [data-i18n="en"] { display: revert; }
 .nav-toggle-input:checked ~ .container .nav-burger span:nth-child(3),
 .nav-burger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
+/* Right-side sliding drawer, with a dimmed backdrop behind it —
+   a smaller, clearly-bounded panel instead of a full-viewport
+   overlay that can visually compete with page content. */
+.mobile-menu-backdrop {
+  position: fixed; inset: 0; z-index: 89;
+  background: rgba(15,13,10,.45);
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s var(--ease-out);
+}
+.nav-toggle-input:checked ~ .mobile-menu-backdrop,
+.mobile-menu-backdrop.is-open { opacity: 1; pointer-events: auto; }
+
 .mobile-menu {
-  position: fixed; inset: var(--nav-h) 0 0 0; z-index: 90;
-  background: var(--bg); padding: 1.5rem clamp(1.25rem, 4vw, 2.5rem);
-  transform: translateY(-8px); opacity: 0; pointer-events: none;
-  transition: opacity .25s var(--ease-out), transform .25s var(--ease-out);
-  border-top: 1px solid var(--line); overflow-y: auto;
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 95;
+  width: min(340px, 84vw);
+  background: var(--bg);
+  padding: 1.5rem clamp(1.25rem, 6vw, 2rem);
+  padding-top: calc(var(--nav-h) + .5rem);
+  transform: translateX(100%);
+  box-shadow: -12px 0 32px rgba(15,13,10,.16);
+  transition: transform .3s var(--ease-out);
+  overflow-y: auto;
 }
 .nav-toggle-input:checked ~ .mobile-menu,
-.mobile-menu.is-open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.mobile-menu.is-open { transform: translateX(0); }
 
 @media (max-width: 400px) {
   .brand-word { display: none; }
 }
-.mobile-menu a { display: block; padding: 1.1rem 0; border-bottom: 1px solid var(--line); font-family: var(--display); font-weight: 700; font-size: 1.35rem; color: var(--ink); }
+.mobile-menu a { display: block; padding: 1.1rem 0; border-bottom: 1px solid var(--line); font-family: var(--display); font-weight: 700; font-size: 1.3rem; color: var(--ink); }
 .mobile-menu .btn { margin-top: 1.5rem; width: 100%; justify-content: center; }
 
 /* --- Cards --- */
@@ -364,4 +375,4 @@ html.js .reveal[data-split] { opacity: 1; transform: none; }
    8. Responsive
    ============================================================= */
 @media (min-width: 720px) { .nav-cta { display: inline-flex; } }
-@media (min-width: 960px) { .nav-links { display: flex; } .nav-burger, .mobile-menu { display: none; } }
+@media (min-width: 960px) { .nav-links { display: flex; } .nav-burger, .mobile-menu, .mobile-menu-backdrop { display: none; } }

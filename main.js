@@ -39,12 +39,14 @@
   function initMobileMenu() {
     var toggle = $("#nav-toggle");
     var menu = $("[data-mobile-menu]");
+    var backdrop = $("[data-mobile-backdrop]");
     var burger = $(".nav-burger");
     if (!toggle || !menu) return;
 
     function sync() {
       menu.classList.toggle("is-open", toggle.checked);
       if (burger) burger.classList.toggle("is-open", toggle.checked);
+      if (backdrop) backdrop.classList.toggle("is-open", toggle.checked);
     }
     toggle.addEventListener("change", sync);
     sync();
@@ -55,6 +57,13 @@
         sync();
       });
     });
+
+    if (backdrop) {
+      backdrop.addEventListener("click", function () {
+        toggle.checked = false;
+        sync();
+      });
+    }
   }
 
   /* ---------------------------------------------------------
